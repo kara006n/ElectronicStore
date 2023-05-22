@@ -1,5 +1,6 @@
 package com.project.ElectronicStore.services.impl;
 
+import com.project.ElectronicStore.dtos.PageableResponse;
 import com.project.ElectronicStore.dtos.UserDto;
 import com.project.ElectronicStore.entities.User;
 import com.project.ElectronicStore.exception.ResourceNotFoundException;
@@ -64,15 +65,23 @@ public class UserServiceImpl  implements UserService {
       }
 
       @Override
-      public List<UserDto> getAllUser(int pageNumber, int pageSize, String sortBy, String sortDir) {
+      public PageableResponse<UserDto> getAllUser(int pageNumber, int pageSize, String sortBy, String sortDir) {
 
             Sort sort = Sort.by(sortDir.equalsIgnoreCase("asc")? Sort.Direction.ASC: Sort.Direction.DESC,sortBy);
             Pageable pageable = PageRequest.of(pageNumber,pageSize, sort);
             Page<User> page = userRepository.findAll(pageable);
             List<User> users = page.getContent();
             //List<UserDto> dtoList = users.stream().map(user -> entityToDto(user)).collect(Collectors.toList());
-            return users.stream().map(user -> entityToDto(user)).collect(Collectors.toList());
-            //return dtoList;
+            List<UserDto> dtoList = users.stream().map(user -> entityToDto(user)).collect(Collectors.toList());
+
+            PageableResponse<UserDto> response = new PageableResponse<>();
+            response.setContent(dtoList);
+            response.setPageNumber(page.getNumber());
+            response.setPageSize(page.getSize());
+            response.setTotalElements(page.getTotalElements());
+            response.setTotalPages(page.getTotalPages());
+            response.setLastPage(page.isLast());
+            return response;
       }
 
       @Override
