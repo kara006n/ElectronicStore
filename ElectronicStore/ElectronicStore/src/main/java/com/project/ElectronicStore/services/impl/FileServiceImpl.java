@@ -1,6 +1,6 @@
 package com.project.ElectronicStore.services.impl;
 
-import com.project.ElectronicStore.exception.BadApiRequest;
+import com.project.ElectronicStore.exception.BadApiRequestException;
 import com.project.ElectronicStore.services.FileService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +44,7 @@ public class FileServiceImpl implements FileService {
 
             }else{
 
-                  throw new BadApiRequest("File with this "+extension+"not allowed");
+                  throw new BadApiRequestException("File with extension "+extension+" not allowed");
             }
 
 

@@ -1,23 +1,34 @@
 package com.project.ElectronicStore.controllers;
 
 import com.project.ElectronicStore.dtos.ApiResponseMessage;
+import com.project.ElectronicStore.dtos.ImageResponse;
 import com.project.ElectronicStore.dtos.PageableResponse;
 import com.project.ElectronicStore.dtos.UserDto;
+import com.project.ElectronicStore.services.FileService;
 import com.project.ElectronicStore.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
 
+      @Value("${user.profile.image.path}")
+      private String imageUploadPath;
+
       @Autowired
       private UserService userService;
+
+      @Autowired
+      private FileService fileService;
 
       //create
       @PostMapping
@@ -82,6 +93,30 @@ public class UserController {
       {
             return new ResponseEntity<>(userService.searchUser(keywords), HttpStatus.OK);
       }
+
+
+      //upload user image
+
+      @PostMapping("/image/{userId}")
+      public ResponseEntity<ImageResponse> uploadUserImage(@RequestParam("userImage")MultipartFile image, @PathVariable String userId) throws IOException {
+            String imageName = fileService.uploadFile(image, imageUploadPath);
+
+            UserDto user = userService.getUserById(userId);
+
+            user.setImageName(imageName);
+            UserDto userDto = userService.updateUser(user, userId);
+
+            ImageResponse imageResponse = ImageResponse.builder()
+                    .imageName(imageName)
+                    .success(true)
+                    .message("image uploaded successfully")
+                    .status(HttpStatus.CREATED).build();
+            return new ResponseEntity<>(imageResponse, HttpStatus.CREATED);
+
+      }
+
+
+      //serve user image
 
 }
 
