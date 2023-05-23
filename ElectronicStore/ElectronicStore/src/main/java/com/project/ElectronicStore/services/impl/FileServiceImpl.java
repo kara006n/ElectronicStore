@@ -37,9 +37,12 @@ public class FileServiceImpl implements FileService {
                         //create folder
                         folder.mkdirs();
                   }
-
-                  //upload
-                  Files.copy(file.getInputStream(), Paths.get(fullPAthWithFileName));
+                  // upload
+                  try (InputStream inputStream = file.getInputStream()) {
+                        Files.copy(inputStream, Paths.get(fullPAthWithFileName));
+                  }
+//                  //upload
+//                  Files.copy(file.getInputStream(), Paths.get(fullPAthWithFileName));
                   return fileNameWithExtension;
 
             }else{
