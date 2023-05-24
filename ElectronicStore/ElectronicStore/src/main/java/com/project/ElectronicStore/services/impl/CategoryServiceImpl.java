@@ -9,13 +9,20 @@ import com.project.ElectronicStore.repositories.CategoryRepository;
 import com.project.ElectronicStore.services.CategoryService;
 import org.apache.catalina.mapper.Mapper;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 import java.util.UUID;
 
 @Service
@@ -26,6 +33,11 @@ public class CategoryServiceImpl implements CategoryService {
 
       @Autowired
       private ModelMapper mapper;
+
+      @Value("${category.profile.image.path}")
+      private String imagePath;
+
+      Logger logger = LoggerFactory.getLogger(CategoryServiceImpl.class);
 
       @Override
       public CategoryDto create(CategoryDto categoryDto) {
@@ -54,6 +66,16 @@ public class CategoryServiceImpl implements CategoryService {
       @Override
       public void delete(String categoryId) {
             Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category Not Found with given Id"));
+            String fullPath = imagePath + category.getCoverImage();
+            try{
+                  Path path = Path.of(fullPath);
+                  Files.delete(path);
+            }catch(NoSuchFileException ex){
+                  logger.info("category image not found");
+                  ex.printStackTrace();
+            }catch(IOException e){
+                  e.printStackTrace();
+            }
             categoryRepository.delete(category);
 
       }

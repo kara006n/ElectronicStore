@@ -2,21 +2,42 @@ package com.project.ElectronicStore.controllers;
 
 import com.project.ElectronicStore.dtos.ApiResponseMessage;
 import com.project.ElectronicStore.dtos.CategoryDto;
+import com.project.ElectronicStore.dtos.ImageResponse;
 import com.project.ElectronicStore.dtos.PageableResponse;
 import com.project.ElectronicStore.services.CategoryService;
+import com.project.ElectronicStore.services.FileService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.FileSystemUtils;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 
 @RestController
 @RequestMapping("/categories")
 public class CategoryController {
 
+      @Value("${category.profile.image.path}")
+      private String imageUploadPath;
+
+      private Logger logger = LoggerFactory.getLogger(CategoryController.class);
+
       @Autowired
       CategoryService categoryService;
+
+      @Autowired
+      FileService fileService;
 
       //create
       @PostMapping
@@ -64,6 +85,34 @@ public class CategoryController {
       public ResponseEntity<CategoryDto> getSingle(@PathVariable String categoryId){
             CategoryDto categoryDto = categoryService.get(categoryId);
             return ResponseEntity.ok(categoryDto);
+      }
+
+      //upload image
+      @PostMapping("/image/{categoryId}")
+      public ResponseEntity<ImageResponse> uploadCategoryImage(@RequestParam("categoryImage") MultipartFile file, @PathVariable String categoryId) throws IOException {
+            String imageName = fileService.uploadFile(file, imageUploadPath);
+            CategoryDto category = categoryService.get(categoryId);
+            category.setCoverImage(imageName);
+            CategoryDto updated = categoryService.update(category, categoryId);
+            ImageResponse image_uploaded_succesfully = ImageResponse.builder()
+                    .message("image uploaded succesfully")
+                    .status(HttpStatus.OK)
+                    .success(true)
+                    .imageName(imageName).build();
+            return new ResponseEntity<>(image_uploaded_succesfully,HttpStatus.CREATED);
+
+      }
+
+      //serve image
+
+      @GetMapping("/image/{categoryId}")
+      public void serveCategoryImage(@PathVariable String categoryId, HttpServletResponse response) throws IOException {
+            CategoryDto categoryDto = categoryService.get(categoryId);
+            logger.info("Category Image Name : {}", categoryDto.getCoverImage());
+            InputStream resource = fileService.getResource(imageUploadPath, categoryDto.getCoverImage());
+            response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+            StreamUtils.copy(resource, response.getOutputStream());
+            resource.close();
       }
 
 
