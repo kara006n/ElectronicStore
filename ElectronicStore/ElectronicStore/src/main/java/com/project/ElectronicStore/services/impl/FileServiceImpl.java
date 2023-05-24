@@ -38,6 +38,7 @@ public class FileServiceImpl implements FileService {
                         folder.mkdirs();
                   }
                   // upload
+                  //adding InputStream in try block helps to close resource automatically
                   try (InputStream inputStream = file.getInputStream()) {
                         Files.copy(inputStream, Paths.get(fullPAthWithFileName));
                   }
