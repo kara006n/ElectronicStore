@@ -14,7 +14,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
+@Service
 public class CategoryServiceImpl implements CategoryService {
 
       @Autowired
@@ -25,6 +29,9 @@ public class CategoryServiceImpl implements CategoryService {
 
       @Override
       public CategoryDto create(CategoryDto categoryDto) {
+            //creating categoryId randomly
+            String categoryId = UUID.randomUUID().toString();
+            categoryDto.setCategoryId(categoryId);
             Category category = mapper.map(categoryDto, Category.class);
             Category savedCategory = categoryRepository.save(category);
             return mapper.map(savedCategory, CategoryDto.class);
@@ -34,7 +41,7 @@ public class CategoryServiceImpl implements CategoryService {
       public CategoryDto update(CategoryDto categoryDto, String categoryId) {
 
             //get category of id
-            Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category Not Found Exception"));
+            Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category Not Found with given Id"));
 
             //update category details
             category.setTitle(categoryDto.getTitle());
@@ -46,7 +53,7 @@ public class CategoryServiceImpl implements CategoryService {
 
       @Override
       public void delete(String categoryId) {
-            Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category Not Found Exception"));
+            Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category Not Found with given Id"));
             categoryRepository.delete(category);
 
       }
@@ -63,7 +70,7 @@ public class CategoryServiceImpl implements CategoryService {
 
       @Override
       public CategoryDto get(String categoryId) {
-            Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category Not Found Exception"));
+            Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category Not Found with given Id"));
             return mapper.map(category, CategoryDto.class);
       }
 }

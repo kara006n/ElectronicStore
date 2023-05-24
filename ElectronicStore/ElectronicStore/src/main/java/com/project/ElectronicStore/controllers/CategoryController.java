@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/categories")
 public class CategoryController {
@@ -18,15 +20,15 @@ public class CategoryController {
 
       //create
       @PostMapping
-      public ResponseEntity<CategoryDto> createCategory(@RequestBody CategoryDto categoryDto)
+      public ResponseEntity<CategoryDto> createCategory(@Valid @RequestBody CategoryDto categoryDto)
       {
             //call service to save object
             CategoryDto categoryDto1 = categoryService.create(categoryDto);
             return new ResponseEntity<>(categoryDto1, HttpStatus.CREATED);
       }
       //update
-      @PutMapping("/{categoryId")
-      public ResponseEntity<CategoryDto> updateCategory(@RequestBody CategoryDto categoryDto, @PathVariable String categoryId){
+      @PutMapping("/{categoryId}")
+      public ResponseEntity<CategoryDto> updateCategory(@Valid @RequestBody CategoryDto categoryDto, @PathVariable String categoryId){
 
             CategoryDto updatedCategory = categoryService.update(categoryDto, categoryId);
             return new ResponseEntity<>(updatedCategory, HttpStatus.OK);
@@ -34,7 +36,7 @@ public class CategoryController {
 
 
       //delete
-      @DeleteMapping("/{categoryId")
+      @DeleteMapping("/{categoryId}")
       public ResponseEntity<ApiResponseMessage> deleteCategory(@PathVariable String categoryId){
             categoryService.delete(categoryId);
             ApiResponseMessage response = ApiResponseMessage.builder()
@@ -49,7 +51,7 @@ public class CategoryController {
       @GetMapping
       public ResponseEntity<PageableResponse<CategoryDto>> getAll(
               @RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNUmber,
-              @RequestParam(value = "pageSize", defaultValue = "0", required = false) int pageSize,
+              @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
               @RequestParam(value = "sortBy", defaultValue = "title", required = false) String sortBy,
               @RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir
       ){
