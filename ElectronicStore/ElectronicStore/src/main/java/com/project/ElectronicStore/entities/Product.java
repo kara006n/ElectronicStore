@@ -31,4 +31,5 @@ public class Product {
       private Date addedDate;
       private boolean live;
       private boolean stock;
+      private String productImage;
 }
