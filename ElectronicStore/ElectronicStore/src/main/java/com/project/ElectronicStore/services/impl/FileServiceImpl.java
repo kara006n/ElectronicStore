@@ -25,7 +25,10 @@ public class FileServiceImpl implements FileService {
             String filename = UUID.randomUUID().toString();
             String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
             String fileNameWithExtension = filename+extension;
-            String fullPAthWithFileName = path+ File.separator+fileNameWithExtension;
+            //logger.info("FileNameWithExtension : {}", fileNameWithExtension);
+            //String fullPAthWithFileName = path+ File.separator+fileNameWithExtension;
+            String fullPAthWithFileName = path+ fileNameWithExtension;
+            //logger.info("fullPAthWithFileName : {}", fullPAthWithFileName);
 
             if(extension.equalsIgnoreCase(".png") || extension.equalsIgnoreCase(".jpg") || extension.equalsIgnoreCase(".jpeg"))
             {
@@ -44,7 +47,9 @@ public class FileServiceImpl implements FileService {
                   }
 //                  //upload
 //                  Files.copy(file.getInputStream(), Paths.get(fullPAthWithFileName));
+                  //logger.info("return statement : {}", fullPAthWithFileName);
                   return fileNameWithExtension;
+
 
             }else{
 
