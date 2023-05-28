@@ -1,11 +1,9 @@
 package com.project.ElectronicStore.controllers;
 
-import com.project.ElectronicStore.dtos.ApiResponseMessage;
-import com.project.ElectronicStore.dtos.CategoryDto;
-import com.project.ElectronicStore.dtos.ImageResponse;
-import com.project.ElectronicStore.dtos.PageableResponse;
+import com.project.ElectronicStore.dtos.*;
 import com.project.ElectronicStore.services.CategoryService;
 import com.project.ElectronicStore.services.FileService;
+import com.project.ElectronicStore.services.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +33,9 @@ public class CategoryController {
 
       @Autowired
       CategoryService categoryService;
+
+      @Autowired
+      ProductService productService;
 
       @Autowired
       FileService fileService;
@@ -94,12 +95,12 @@ public class CategoryController {
             CategoryDto category = categoryService.get(categoryId);
             category.setCoverImage(imageName);
             CategoryDto updated = categoryService.update(category, categoryId);
-            ImageResponse image_uploaded_succesfully = ImageResponse.builder()
-                    .message("image uploaded succesfully")
+            ImageResponse image_uploaded_successfully = ImageResponse.builder()
+                    .message("image uploaded successfully")
                     .status(HttpStatus.OK)
                     .success(true)
                     .imageName(imageName).build();
-            return new ResponseEntity<>(image_uploaded_succesfully,HttpStatus.CREATED);
+            return new ResponseEntity<>(image_uploaded_successfully,HttpStatus.CREATED);
 
       }
 
@@ -113,6 +114,41 @@ public class CategoryController {
             response.setContentType(MediaType.IMAGE_JPEG_VALUE);
             StreamUtils.copy(resource, response.getOutputStream());
             resource.close();
+      }
+
+
+      @PostMapping("{categoryId}/products")
+      public ResponseEntity<ProductDto> createProductWithCategory(@RequestBody ProductDto productDto,
+                                                                  @PathVariable String categoryId){
+
+            ProductDto productWithCategory = productService.createWithCategory(productDto, categoryId);
+            return new ResponseEntity<>(productWithCategory, HttpStatus.CREATED);
+
+
+      }
+
+      @PutMapping("{categoryId}/products/{productId}")
+      public ResponseEntity<ProductDto> updateCategoryOfProduct(@PathVariable String productId,
+                                                                  @PathVariable String categoryId){
+
+            ProductDto productWithCategory = productService.updateCategory(productId,categoryId);
+            return new ResponseEntity<>(productWithCategory, HttpStatus.OK);
+      }
+
+      //get products of specific category
+      @GetMapping("{categoryId}/products")
+      public ResponseEntity<PageableResponse<ProductDto>> getProductsOfCategory(
+              @PathVariable String categoryId,
+              @RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
+              @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
+              @RequestParam(value = "sortBy", defaultValue = "title", required = false) String sortBy,
+              @RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir
+      ){
+            logger.info("Neil kamal" );
+            PageableResponse<ProductDto> response = productService.getAllProductOfCategory(categoryId, pageSize, pageNumber, sortBy, sortDir);
+            return new ResponseEntity<>(response,HttpStatus.OK);
+
+
       }
 
 
