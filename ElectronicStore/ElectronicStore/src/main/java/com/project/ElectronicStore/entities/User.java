@@ -4,6 +4,8 @@ import lombok.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -35,6 +37,8 @@ public class User {
 
       @Column(name = "user_image_name")
       private String imageName;
+      @OneToMany(mappedBy = "user",fetch = FetchType.LAZY, cascade = CascadeType.REMOVE )
+      private List<Order> orders = new ArrayList<>();
 
 }
 
