@@ -1,5 +1,6 @@
 package com.project.ElectronicStore.dtos;
 
+import com.project.ElectronicStore.entities.Role;
 import com.project.ElectronicStore.validate.ImageNameValid;
 import lombok.*;
 
@@ -7,6 +8,8 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -41,4 +44,6 @@ public class UserDto {
 
       @ImageNameValid
       private String imageName;
+
+      private Set<RoleDto> roles = new HashSet<>();
 }

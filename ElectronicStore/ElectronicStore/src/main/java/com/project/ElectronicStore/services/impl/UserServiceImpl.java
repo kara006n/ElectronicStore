@@ -2,9 +2,11 @@ package com.project.ElectronicStore.services.impl;
 
 import com.project.ElectronicStore.dtos.PageableResponse;
 import com.project.ElectronicStore.dtos.UserDto;
+import com.project.ElectronicStore.entities.Role;
 import com.project.ElectronicStore.entities.User;
 import com.project.ElectronicStore.exception.ResourceNotFoundException;
 import com.project.ElectronicStore.helper.Helper;
+import com.project.ElectronicStore.repositories.RoleRepository;
 import com.project.ElectronicStore.repositories.UserRepository;
 import com.project.ElectronicStore.services.UserService;
 import org.modelmapper.ModelMapper;
@@ -25,6 +27,7 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -40,6 +43,12 @@ public class UserServiceImpl  implements UserService {
       @Autowired
       private ModelMapper mapper;
 
+      @Autowired
+      private RoleRepository roleRepository;
+
+      @Value("${normal.role.id}")
+      String role_normal_id;
+
       @Value("${user.profile.image.path}")
       private String imagePath;
 
@@ -54,6 +63,8 @@ public class UserServiceImpl  implements UserService {
             //encoding password before saving
             userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
             User user = dtoToEntity(userDto);
+            Role role = roleRepository.findById(role_normal_id).get();
+            user.getRoles().add(role);
             User savedUser = userRepository.save(user);
             return entityToDto(savedUser);
             //return newDto;

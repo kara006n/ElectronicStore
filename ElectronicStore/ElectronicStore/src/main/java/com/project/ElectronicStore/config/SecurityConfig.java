@@ -5,9 +5,11 @@ import com.project.ElectronicStore.security.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
@@ -20,7 +22,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-public class SecurityConfig {
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class  SecurityConfig {
 
       @Autowired
       private UserDetailsService userDetailsService;
@@ -55,6 +58,9 @@ public class SecurityConfig {
                     .authorizeRequests()
                               .antMatchers("/auth/login")
                               .permitAll()
+                              .antMatchers(HttpMethod.POST, "/users")
+                              .permitAll()
+                    .antMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN")
                               .anyRequest()
                               .authenticated()
                     .and()
