@@ -6,6 +6,7 @@ import com.project.ElectronicStore.dtos.JwtResponse;
 import com.project.ElectronicStore.exception.BadApiRequestException;
 import com.project.ElectronicStore.security.JwtHelper;
 import com.project.ElectronicStore.services.UserService;
+import io.swagger.annotations.Api;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ import java.security.Principal;
 
 @RestController
 @RequestMapping("/auth")
+@Api(value="AuthController",description = "Rest APIs for Authentication")
 public class AuthController {
 
       @Autowired

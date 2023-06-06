@@ -4,6 +4,7 @@ import com.project.ElectronicStore.dtos.AddItemToCartRequest;
 import com.project.ElectronicStore.dtos.ApiResponseMessage;
 import com.project.ElectronicStore.dtos.CartDto;
 import com.project.ElectronicStore.services.CartService;
+import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/carts")
+@Api(value="CartController",description = "Rest APIs to perform cart related operations")
 public class CartController {
 
       Logger logger = LoggerFactory.getLogger(CartController.class);

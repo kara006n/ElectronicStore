@@ -2,6 +2,7 @@ package com.project.ElectronicStore.controllers;
 
 import com.project.ElectronicStore.dtos.*;
 import com.project.ElectronicStore.services.OrderService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/orders")
+@Api(value="OrderController",description = "Rest APIs to perform order related operations")
 public class OrderController {
 
       @Autowired

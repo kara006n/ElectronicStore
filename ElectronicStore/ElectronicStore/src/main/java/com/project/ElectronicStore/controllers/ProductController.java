@@ -6,6 +6,7 @@ import com.project.ElectronicStore.dtos.PageableResponse;
 import com.project.ElectronicStore.dtos.ProductDto;
 import com.project.ElectronicStore.services.FileService;
 import com.project.ElectronicStore.services.ProductService;
+import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import java.io.InputStream;
 
 @RestController
 @RequestMapping("/products")
+@Api(value="ProductController",description = "Rest APIs to perform product related operations")
 public class ProductController {
 
       @Value("${product.image.path}")

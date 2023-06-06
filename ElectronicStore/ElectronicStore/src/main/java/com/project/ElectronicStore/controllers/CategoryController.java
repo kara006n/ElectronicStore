@@ -4,6 +4,7 @@ import com.project.ElectronicStore.dtos.*;
 import com.project.ElectronicStore.services.CategoryService;
 import com.project.ElectronicStore.services.FileService;
 import com.project.ElectronicStore.services.ProductService;
+import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ import java.io.InputStream;
 
 @RestController
 @RequestMapping("/categories")
+@Api(value="CategoryController",description = "Rest APIs to perform operations related to product category")
 public class CategoryController {
 
       @Value("${category.profile.image.path}")

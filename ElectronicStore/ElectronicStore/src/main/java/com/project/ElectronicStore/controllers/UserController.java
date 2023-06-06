@@ -6,6 +6,7 @@ import com.project.ElectronicStore.dtos.PageableResponse;
 import com.project.ElectronicStore.dtos.UserDto;
 import com.project.ElectronicStore.services.FileService;
 import com.project.ElectronicStore.services.UserService;
+import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
+@Api(value="UserController",description = "Rest APIs to perform user related operations")
 public class UserController {
 
       @Value("${user.profile.image.path}")

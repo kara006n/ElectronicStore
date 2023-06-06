@@ -25,6 +25,16 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class  SecurityConfig {
 
+      private final String[] PUBLIC_URLs = {
+
+              "/swagger-ui/**",
+              "/webjars/**",
+              "/swagger-resources/**",
+              "/v3/api-docs",
+              "/v2/api-docs"
+
+      };
+
       @Autowired
       private UserDetailsService userDetailsService;
       @Autowired
@@ -52,6 +62,7 @@ public class  SecurityConfig {
 */
       @Bean
       public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
             http
                     .cors().disable()
                     .csrf().disable()
@@ -61,6 +72,8 @@ public class  SecurityConfig {
                               .antMatchers(HttpMethod.POST, "/users")
                               .permitAll()
                     .antMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN")
+                    .antMatchers(PUBLIC_URLs)
+                    .permitAll()
                               .anyRequest()
                               .authenticated()
                     .and()
