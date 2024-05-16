@@ -10,6 +10,5 @@ public class ProjectConfig {
       @Bean
       public ModelMapper mapper(){
             return new ModelMapper();
-            //ignore this comment just testing something
       }
 }
